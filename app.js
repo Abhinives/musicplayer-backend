@@ -1,22 +1,39 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const express = require("express");
+const mongoose = require("mongoose");
+require("express-async-errors");
+require("dotenv").config();
+const bodyParser = require("body-parser");
 
-const cors = require('cors');
-const user = require('./routes/loginroutes');
+const errorHandler = require("./handlers/errorHandlers");
+const cors = require("cors");
 
-const app  = express();
+const doctorRoute = require("./modules/doctor/doctor.route");
+const patientRoute = require("./modules/patients/patient.route");
+const medicineRoute = require("./modules/medicines/medicine.route");
+const ordersRoute = require("./modules/orders/orders.route");
+const cartRoute = require("./modules/carts/carts.route");
+const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use('/musicplayer', user);
-const connectToDb = async()=>{
-    await mongoose.connect('mongodb://127.0.0.1:27017/music')
-    console.log('Connected');
-}
-connectToDb();
-const PORT= 3000;
 
-app.listen(PORT,()=>{
-    console.log('Listening');
-})
+app.use("/doctor", doctorRoute);
+app.use("/patient", patientRoute);
+
+app.use("/medicines", medicineRoute);
+app.use("/orders", ordersRoute);
+app.use("/cart", cartRoute);
+// app.use("/doctor-appointment", user);
+// app.use("/doctor-appointment", doctorUser);
+// app.use("/doctor-appointment", medicines);
+// app.use("/doctor-appointment", orders);
+const connectToDb = async () => {
+  await mongoose.connect("mongodb://127.0.0.1:27017/Music");
+  console.log("Connected");
+};
+connectToDb();
+const PORT = 3000;
+app.use(errorHandler);
+app.listen(PORT, () => {
+  console.log("Listening");
+});
