@@ -6,12 +6,53 @@ const slotBooking = async (req, res) => {
   try {
     const patientId = req.params.pid;
     const doctorId = req.params.did;
-    const { bookingDate, startTime, endTime } = req.body;
+    const {
+      firstName,
+      lastName,
+      gender,
+      age,
+      email,
+      phone,
+      consultingFee,
+      bookingDate,
+      startTime,
+      endTime,
+    } = req.body;
+    if (!firstName) throw new Error("First name is required");
+    if (!gender) throw new Error("Gender is required");
+    if (!lastName) throw new Error("Last name is required");
+    if (!age) throw new Error("age is required");
+    if (age < 0) throw new Error("Age must be non negative");
+    if (!email) throw new Error("Email address is requried");
+    if (!phone) throw new Error("Phone number field is required");
+    if (!consultingFee) throw new Error("Consulting fee is required");
+    if (consultingFee < 0) throw new Error("Consulting fee is non negative");
+    if (phone.length !== 10) throw new Error("Enter valid phone number");
+    const currentDate = new Date();
+    const convertedDate = new Date(bookingDate);
+    const currentDateString = currentDate.toISOString().split("T")[0];
+    const convertedDateString = convertedDate.toISOString().split("T")[0];
+
+    // Compare the date parts
+    if (currentDateString === convertedDateString) {
+      if (currentDate.getHours() >= new Date(startTime).getUTCHours())
+        throw new Error("Enter valid startTime");
+    }
+
+    const checkId = await doctor.findOne({ _id: doctorId });
+    if (!checkId) throw new Error("Doctor is not available");
     const isDoctor = await slots.findOne({ doctorId: doctorId });
 
     if (!isDoctor) {
       const payload = {
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        age: age,
+        email: email,
+        phone: phone,
         doctorId: doctorId,
+        fee: consultingFee,
         schedule: [
           {
             date: bookingDate,

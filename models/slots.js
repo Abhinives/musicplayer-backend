@@ -14,6 +14,35 @@ const dailyScheduleSchema = new mongoose.Schema({
   slotSchedule: [slotSchema],
 });
 const slots = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+    enum: ["Male", "Female"],
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  fee: {
+    type: Number,
+    required: true,
+  },
   doctorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "doctorUser",

@@ -19,6 +19,7 @@ const getCart = async (req, res) => {
         name: getMedicine.name,
         medicineId: getMedicine._id,
         qty: medicineDetail.qty,
+        totalQty: getMedicine.qty,
         actualCost: getMedicine.cost,
         imageUrl: getMedicine.imageUrl,
       };

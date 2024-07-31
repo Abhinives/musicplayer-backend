@@ -30,6 +30,10 @@ const doctorUserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  generalFee: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("doctorUser", doctorUserSchema);

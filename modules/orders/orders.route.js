@@ -6,6 +6,6 @@ const ordersRoute = require("express").Router();
 
 // ordersRoute.use(isAuthenticated);
 ordersRoute.post("/:id", addOrders);
-ordersRoute.get("/:email", getOrders);
+ordersRoute.get("/:id", getOrders);
 
 module.exports = ordersRoute;

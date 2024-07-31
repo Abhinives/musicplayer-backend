@@ -13,28 +13,27 @@ const addOrders = async (req, res) => {
   let products = [];
 
   const getCartProducts = await carts.findOne({ id: userId });
-  const promises = productIds.map(async (productId) => {
-    const findProduct = getCartProducts.product.id(productId);
+  console.log(getCartProducts);
 
-    const pullCartProduct = await carts.findOneAndUpdate(
-      {
-        id: userId,
-      },
-      {
-        $pull: {
-          product: {
-            _id: productId,
-          },
-        },
-      }
-    );
-    if (!pullCartProduct)
-      throw new Error("Error occured while removing cart product");
-    console.log(findProduct);
+  const promises = productIds.map(async (productId) => {
+    console.log(productId);
+    const findProduct = getCartProducts.product.id(productId);
 
     const findMedicine = await medicines.findOne({
       _id: findProduct.medicineId,
     });
+    if (findMedicine.qty < findProduct.qty) throw new Error("No stock");
+    const updQty = findMedicine.qty - findProduct.qty;
+    const updateMedicines = await medicines.updateOne(
+      {
+        _id: findProduct.medicineId,
+      },
+      {
+        qty: updQty,
+      }
+    );
+    if (!updateMedicines)
+      throw new Error("Error occured while updating medicines");
 
     totalCost = totalCost + findMedicine.cost * findProduct.qty;
 
@@ -60,6 +59,23 @@ const addOrders = async (req, res) => {
   const saveOrder = new orders(payload);
   await saveOrder.save();
 
+  const promises2 = productIds.map(async (productId) => {
+    const pullCartProduct = await carts.findOneAndUpdate(
+      {
+        id: userId,
+      },
+      {
+        $pull: {
+          product: {
+            _id: productId,
+          },
+        },
+      }
+    );
+    if (!pullCartProduct)
+      throw new Error("Error occured while removing cart product");
+  });
+  await Promise.all(promises2);
   res.status(200).json({ status: "Success" });
 };
 module.exports = addOrders;

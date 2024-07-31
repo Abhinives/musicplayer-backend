@@ -27,11 +27,23 @@ app.use("/cart", cartRoute);
 // app.use("/doctor-appointment", doctorUser);
 // app.use("/doctor-appointment", medicines);
 // app.use("/doctor-appointment", orders);
-const connectToDb = async () => {
-  await mongoose.connect("mongodb://127.0.0.1:27017/Music");
-  console.log("Connected");
-};
-connectToDb();
+const username = "Abhi"; // Replace with your MongoDB Atlas username
+const password = "Abhi"; // Replace with your MongoDB Atlas password
+const cluster = "cluster0.unnuqmn.mongodb.net"; // Cluster address
+const dbname = "Royal Clinic"; // Optional: specify a database name
+
+const uri =
+  "mongodb+srv://abhinivi67:abhinivesh@clusterproject.8tngbpi.mongodb.net/?retryWrites=true&w=majority&appName=ClusterProject";
+
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB Atlas:", err);
+  });
+
 const PORT = 3000;
 app.use(errorHandler);
 app.listen(PORT, () => {
